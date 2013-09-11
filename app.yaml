@@ -1,0 +1,20 @@
+application: angular-seed
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+handlers:
+# Angular application.
+- url: /
+  static_files: static/app/index.html
+  upload: static/app/index.html
+
+# Angular application files.
+- url: /app
+  static_dir: static/app
+
+# Cloud Endpoints handler. 
+- url: /_ah/spi/.*
+  script: services.app
+  secure: always

@@ -1,0 +1,22 @@
+<div class="row">
+  <div class="col-xs-6 col-md-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        List
+      </div>
+      <div class="panel-body">
+        <button class="btn btn-default"
+          ng-click="page(list.nextPageToken)"
+          ng-disabled="!list.nextPageToken">More</button>
+        <ul ng-repeat="model in list.items">
+          <li>
+            <a ui-sref="model.list.detail({id: model.id})">{{model.name}}</a>
+            <br>
+            {{model.created | moment_fromNow}}</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-6 col-md-8" ui-view></div>
+</div>

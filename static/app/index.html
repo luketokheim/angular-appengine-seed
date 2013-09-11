@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="seed">
+<head>
+  <title>AngularJS + Cloud Endpoint</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="/app/css/bootstrap.css" rel="stylesheet">
+  <style type="text/css">.ng-cloak {display:none;}</style>
+</head>
+<body>
+  <!-- Navbar. Just standard Bootstrap except for the active item class
+  selectors and the named state <a ui-sref> directive.
+  -->
+  <nav class="navbar navbar-static-top navbar-inverse" role="navigation">
+    <div class="navbar-header"> 
+      <a class="navbar-brand" ui-sref="home">Home</a>
+    </div>
+    <div class="navbar-collapse">
+      <ul class="nav navbar-nav">
+        <li ng-class="{active: $state.includes('about')}">
+          <a ui-sref="about">About</a>
+        </li>         
+        <li ng-class="{active: $state.includes('model.list')}">
+          <a ui-sref="model.list">List</a>
+        </li>
+      </ul>
+      <p class="navbar-text pull-right">
+        {{$state.current.name}}
+      </p>
+    </div>
+  </nav>
+
+  <!-- View container. -->
+  <div class="container" ui-view></div>
+
+  <script src="/app/lib/angular/angular.js"></script>
+  <script src="/app/lib/angular/angular-resource.js"></script>
+  <script src="/app/lib/angular/angular-ui-router.js"></script>
+  <script src="/app/lib/moment.js"></script>
+  
+  <script src="/app/js/app.js"></script>
+  <script src="/app/js/services.js"></script>
+  <script src="/app/js/controllers.js"></script>
+  <script src="/app/js/directives.js"></script>
+  <script src="/app/js/filters.js"></script>
+</body>
+</html>
