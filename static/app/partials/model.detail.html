@@ -1,4 +1,4 @@
-<form name="model_form" ng-submit="model.$save()" novalidate>
+<form name="model_form" ng-submit="save()" novalidate>
   <div class="input-group">
     <input
       ng-model="model.name"
@@ -9,4 +9,7 @@
   </div>
 </form>
 
-<a href="" ng-click="model.$delete()">Delete</a>
+<p ng-show="model.id">
+  <!-- Delete model and go to parent route. -->
+  <a ui-sref="^" ng-click="model.$delete()">Delete</a>
+</p>

@@ -2,15 +2,18 @@
   <div class="col-xs-6 col-md-4">
     <div class="panel panel-default">
       <div class="panel-heading">
-        List
+        List <span class="pull-right"><a
+        ui-sref=".detail({id: 'create'})">Create</a></span>
       </div>
       <div class="panel-body">
+        <!--
         <button class="btn btn-default"
           ng-click="page(list.nextPageToken)"
           ng-disabled="!list.nextPageToken">More</button>
+        -->
         <ul ng-repeat="model in list.items">
           <li>
-            <a ui-sref="model.list.detail({id: model.id})">{{model.name}}</a>
+            <a ui-sref=".detail({id: model.id})">{{model.name}}</a>
             <br>
             {{model.created | moment_fromNow}}</p>
           </li>

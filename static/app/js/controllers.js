@@ -18,10 +18,25 @@ angular.module('seed.controllers', []).
           $scope.$parent.load();
         });
       };
+
+      $scope.delete = function() {  
+        $scope.model.$delete().then(function() {
+          $state.go('^');
+          $scope.$parent.load();
+        });
+      };
     }
   ]).
-  controller('ModelListCtrl', ['$scope', '$stateParams', 'Model',
-    function($scope, $stateParams, Model) {
+  controller('ModelListCtrl', ['$scope', '$stateParams', 'list',
+    function($scope, $stateParams, list) {
+      $scope.list = list;
+
+      $scope.load = function() { 
+        list.$query().then(function(data) {
+          $scope.list = data;
+        });
+      };
+/*
       $scope.load = function(params) {
         $scope.list = Model.query(params);
       };
@@ -32,7 +47,8 @@ angular.module('seed.controllers', []).
 
         $scope.load(params);
       };
+*/
 
-      $scope.load($stateParams);
+      //$scope.load($stateParams);
     }
   ]);
