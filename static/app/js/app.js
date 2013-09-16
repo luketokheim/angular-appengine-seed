@@ -13,20 +13,20 @@ angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
           url: '/about',
           templateUrl: '/app/partials/about.html'
         }).        
-        //state('model', {
-        //  url: '/model',
-        //  templateUrl: '/app/partials/model.html',
-        //  abstract: true
-        //}).
         state('model', {
           url: '/model',
-          templateUrl: '/app/partials/model.list.html',
+          templateUrl: '/app/partials/model.html',
+          abstract: true,
           controller: 'ModelListCtrl',
           resolve: {
             list: ['Model', '$stateParams', function(Model, $stateParams) {
               return Model.query($stateParams).$promise;
             }]
-          }
+          }          
+        }).
+        state('model.list', {
+          url: '',
+          templateUrl: '/app/partials/model.list.html'
         }).
         state('model.detail', {
           url: '/{id}',
@@ -44,7 +44,7 @@ angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
           }
         });
 
-      $urlRouterProvider.otherwise('home');
+      $urlRouterProvider.otherwise('model');
     }
   ]).
   run(['$rootScope', '$state', '$stateParams',

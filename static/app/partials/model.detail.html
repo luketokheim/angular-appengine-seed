@@ -4,12 +4,23 @@
       ng-model="model.name"
       class="form-control" type="text" placeholder="Name" required>
     <span class="input-group-btn">
-      <input class="btn btn-primary" type="submit" value="Save">
+      <button class="btn btn-primary">
+        <span class="glyphicon glyphicon-ok"></span> Save
+      </button>
     </span>
   </div>
 </form>
 
+<div class="panel panel-default" style="margin-top: 1em;">
+  <div class="panel-body">
+    Read a item by id.
+  </div>
+</div>
+
+<!-- Delete model and go to parent route. -->
+<!--
 <p ng-show="model.id">
-  <!-- Delete model and go to parent route. -->
-  <a ui-sref="^" ng-click="model.$delete()">Delete</a>
+  <a ng-click="delete()">Delete</a>
+  <button class="btn btn-danger" ng-click="delete()">Delete</button>
 </p>
+-->

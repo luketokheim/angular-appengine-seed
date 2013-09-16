@@ -1,1 +1,18 @@
-<div ui-view></div>
+<div class="row">
+  <div class="col-xs-6 col-md-4">
+    <div class="list-group">
+      <a ng-repeat="model in list.items"
+         ng-class="{active: $stateParams.id === model.id}"
+         ui-sref="model.detail({id: model.id})"
+         class="list-group-item">
+        <h4 class="list-group-item-heading">
+          {{model.name}}
+        </h4>
+        <p class="list-group-item-text">
+          {{model.created | moment_fromNow}}
+        </p>
+      </a>
+    </div>
+  </div>
+  <div class="col-xs-6 col-md-8" ui-view></div>
+</div>
