@@ -14,6 +14,10 @@ handlers:
 - url: /app
   static_dir: static/app
 
+# Application test files.
+- url: /test
+  static_dir: static/test
+
 # Cloud Endpoints handler. 
 - url: /_ah/spi/.*
   script: services.app

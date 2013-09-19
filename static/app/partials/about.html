@@ -1,25 +1,27 @@
-<div class="page-header">
-  <h2>AngularJS + Cloud Endpoint</h2>
-</div>
+<h1>AngularJS + Cloud Endpoint</h1>
 <p>
   Sample application for using AngularJS backed with a Cloud Endpoint on the
   Google App Engine.
 </p>
 
-<h3>Client</h3>
+<h2>Client</h2>
 <ul>
   <li>
     <a href="http://angularjs.org/">AngularJS</a> 1.2.0-rc.2, HTML enhanced for
     web apps.
     <ul>
-    <li>
-      <a href="http://docs.angularjs.org/api/ngResource">angular-resource</a>,
-      support for interacting with RESTful server-side data sources.
-    </li>    
-    <li>
-      <a href="https://github.com/angular-ui/ui-router">ui-router</a> 0.2.0,
-      state based and nested routing from the Angular UI package.
-    </li>
+      <li>
+        <a href="http://docs.angularjs.org/api/ngResource">angular-resource</a>,
+        support for interacting with RESTful server-side data sources.
+      </li>    
+      <li>
+        <a href="https://github.com/angular-ui/ui-router">ui-router</a> 0.2.0,
+        state based and nested routing from the Angular UI package.
+      </li>
+      <li>
+        <a href="http://docs.angularjs.org/guide/dev_guide.e2e-testing">angular-scenario</a>,
+        E2E testing. Simulate user interaction with the client application.
+      </li>
     </ul>
   </li>
   <li>
@@ -30,9 +32,14 @@
     <a href="http://momentjs.com/">Moment.js</a>, date and time parsing and
     formatting library.
   </li>
+  <li>
+    <a href="http://pivotal.github.io/jasmine/">Jasmine</a> 1.3.1, behavior
+    driven test framework. Uses angular-mocks to handle testing of AngularJS
+    modules.
+  </li>
 </ul>
 
-<h3>App Engine</h3>
+<h2>App Engine</h2>
 <ul>
   <li>
     <a href="https://developers.google.com/appengine/">Python SDK</a> 1.8.4,
@@ -50,6 +57,11 @@
         <a href="http://endpoints-proto-datastore.appspot.com/">Endpoints Proto
         Datastore</a>, allows an NDB model to be used directly with a Cloud
         Endpoints API.
+      </li>
+      <li>
+        <a href="https://developers.google.com/appengine/docs/python/search/">Search API</a>,
+        indexed search of generic documents. Supports partial matching of string
+        fields.
       </li>
     </ul>
   </li>

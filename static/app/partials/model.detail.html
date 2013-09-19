@@ -11,11 +11,10 @@
   </div>
 </form>
 
-<div class="panel panel-default" style="margin-top: 1em;">
-  <div class="panel-body">
-    Read a item by id.
-  </div>
-</div>
+<p ng-show="model.id">
+  <a href="{{$root.api_url}}/{{model.id}}">Read</a> one item by unique id.
+</p>
+
 
 <!-- Delete model and go to parent route. -->
 <!--
