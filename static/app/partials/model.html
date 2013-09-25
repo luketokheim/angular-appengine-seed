@@ -1,7 +1,12 @@
 <div class="row">
-  <div class="col-xs-6 col-md-4">
+  <div class="col-md-4">
     <!-- List of most recent items. -->
     <div class="list-group">
+      <a ui-sref="model.create"
+         ng-class="{active: $state.is('model.create')}"
+         class="list-group-item">
+        <span class="glyphicon glyphicon-plus"></span> Add Item
+      </a>
       <a ng-repeat="model in list.items"
          ng-class="{active: $stateParams.id === model.id}"
          ui-sref="model.detail({id: model.id})"
@@ -14,13 +19,11 @@
         </p>
       </a>
     </div>
-    <!-- Empty list. -->
-    <div class="panel panel-default" ng-hide="list.items">  
-      <div class="panel-body text-muted">
-        No items found
-      </div>
-    </div>
-    <p><a href="{{$root.api_url}}">List</a> the most recent items.</p>
+    <p>
+      <a seed-href>List</a> the most recent items.
+      <br>
+      <code>GET <span seed-api></span></code>
+    </p>
   </div>
-  <div class="col-xs-6 col-md-8" ui-view></div>
+  <div class="col-md-8" ui-view></div>
 </div>

@@ -1,17 +1,25 @@
 'use strict';
 
+// Declare the application module and declare its dependencies. By convention,
+// app specific sub-modules are named "seed.*". 
 angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
                         'seed.filters', 'seed.services']).
+  constant('Config', {
+    'api_url': 'https://angular-seed.appspot.com/_ah/api/seed/v1/model',
+    'version': '1'
+  }).
   config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
+      // View routing. Associate views with their controllers. In this example,
+      // we also resolve the initial data for views before displaying them.
       $stateProvider.
-        state('home', {
-          url: '/home',
-          templateUrl: '/app/partials/home.html'
-        }).
         state('about', {
           url: '/about',
           templateUrl: '/app/partials/about.html'
+        }).
+        state('error', {
+          url: '/error',
+          templateUrl: '/app/partials/error.html'
         }).        
         state('model', {
           url: '/model',
@@ -24,6 +32,8 @@ angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
             }]
           }          
         }).
+        // Using the ui-router dot syntax. The next three views are nested
+        // inside the view named "model".
         state('model.list', {
           url: '',
           templateUrl: '/app/partials/model.list.html'
@@ -44,17 +54,15 @@ angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
           controller: 'ModelCtrl',
           resolve: {
             model: ['Model', '$stateParams', function(Model, $stateParams) {
-              // Use /model/create path edit an empty model.
-              if ('create' === $stateParams.id) {
-                console.log('create');
-                return new Model();
-              } else {
-                return Model.get($stateParams).$promise;
-              }
+              return Model.get($stateParams).$promise;
             }]
           }
+          //onExit: function(model) {
+          //  console.log(model);
+          //}
         });
 
+      // Default route.
       $urlRouterProvider.otherwise('model');
     }
   ]).
@@ -70,6 +78,14 @@ angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
       $rootScope.$state = $state;
       $rootScope.$stateParams = $stateParams;
 
-      $rootScope.api_url = '/_ah/api/seed/v1/model';
+      // Use this to detect when a resolve fails during a view change. Show an
+      // error page.
+      $rootScope.$on('$stateChangeError',
+        function(event, toState, toParams, fromState, fromParams, error) {
+          if ('error' != toState.name) {
+            $state.go('error');
+          }
+        }
+      );
     }
   ]);

@@ -39,5 +39,9 @@ angular.module('seed.controllers', []).
           $scope.$parent.load();
         });
       };
+
+      $scope.is_changed = function() {
+        return $scope.form.$dirty;
+      };
     }
   ]);

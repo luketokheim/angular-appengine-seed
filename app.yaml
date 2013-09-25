@@ -9,14 +9,17 @@ handlers:
 - url: /
   static_files: static/app/index.html
   upload: static/app/index.html
+  secure: always
 
 # Angular application files.
 - url: /app
   static_dir: static/app
+  secure: always
 
 # Application test files.
 - url: /test
   static_dir: static/test
+  secure: always
 
 # Cloud Endpoints handler. 
 - url: /_ah/spi/.*
