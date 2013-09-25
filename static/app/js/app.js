@@ -5,7 +5,8 @@
 angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
                         'seed.filters', 'seed.services']).
   constant('Config', {
-    'api_url': 'https://angular-seed.appspot.com/_ah/api/seed/v1/model',
+    'app_url': 'https://angular-seed.appspot.com',
+    'api_url': '/_ah/api/seed/v1/model',
     'version': '1'
   }).
   config(['$stateProvider', '$urlRouterProvider',
