@@ -22,18 +22,20 @@ describe('Seed services', function() {
     });
   });
 
+  var MockConfig = {
+    api_url: '/api',
+    version: '1'
+  };
+  
+  beforeEach(module(function($provide) {
+    $provide.constant('Config', MockConfig);
+  }));  
+
   describe('Model', function() {
     beforeEach(module('seed.services'));
 
-    var MockConfig = {
-      api_url: '/api'
-    };
     var Model = null;
     var $httpBackend = null;
-
-    beforeEach(module(function($provide) {
-      $provide.constant('Config', MockConfig);
-    }));
 
     beforeEach(inject(function($injector) {
       Model = $injector.get('Model');

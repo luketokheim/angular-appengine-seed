@@ -2,15 +2,18 @@
 
 // Declare the application module and declare its dependencies. By convention,
 // app specific sub-modules are named "seed.*". 
-angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
+angular.module('seed', ['ui.router', 'restangular',
+                        'seed.controllers', 'seed.directives',
                         'seed.filters', 'seed.services']).
   constant('Config', {
     'app_url': 'https://angular-seed.appspot.com',
     'api_url': '/_ah/api/seed/v1/model',
-    'version': '1'
+    'api_base_url': '/_ah/api/seed/v1',
+    'list_limit': 5,
+    'version': 1
   }).
-  config(['$stateProvider', '$urlRouterProvider',
-    function($stateProvider, $urlRouterProvider) {
+  config(['$stateProvider', '$urlRouterProvider', 'RestangularProvider', 'Config',
+    function($stateProvider, $urlRouterProvider, RestangularProvider, Config) {
       // View routing. Associate views with their controllers. In this example,
       // we also resolve the initial data for views before displaying them.
       $stateProvider.
@@ -28,8 +31,14 @@ angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
           abstract: true,
           controller: 'ListCtrl',
           resolve: {
-            list: ['Model', '$stateParams', function(Model, $stateParams) {
-              return Model.query($stateParams).$promise;
+            //list: function() {
+            //  return null;
+            //}
+            //list: ['Model', '$stateParams', function(Model, $stateParams) {
+            //  return Model.query($stateParams).$promise;
+            //}]
+            list: ['Restangular', '$stateParams', function(Restangular, $stateParams) {
+              return Restangular.all('model').getList();
             }]
           }          
         }).
@@ -44,8 +53,11 @@ angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
           templateUrl: '/app/partials/model.detail.html',
           controller: 'ModelCtrl',
           resolve: {
-            model: ['Model', function(Model) {
-              return new Model();
+            //model: ['Model', function(Model) {
+            //  return new Model();
+            //}]
+            model: ['Restangular', function(Restangular) {
+              return Restangular.one('model');
             }]
           }
         }).
@@ -54,17 +66,17 @@ angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
           templateUrl: '/app/partials/model.detail.html',
           controller: 'ModelCtrl',
           resolve: {
-            model: ['Model', '$stateParams', function(Model, $stateParams) {
-              return Model.get($stateParams).$promise;
+            model: ['Restangular', '$stateParams', function(Restangular, $stateParams) {
+              return Restangular.one('model', $stateParams.id).get();
             }]
           }
-          //onExit: function(model) {
-          //  console.log(model);
-          //}
         });
 
       // Default route.
       $urlRouterProvider.otherwise('model');
+
+      RestangularProvider.setBaseUrl(Config.api_base_url);
+      RestangularProvider.setMethodOverriders(['put']);
     }
   ]).
   run(['$rootScope', '$state', '$stateParams',
@@ -83,9 +95,9 @@ angular.module('seed', ['ui.router', 'seed.controllers', 'seed.directives',
       // error page.
       $rootScope.$on('$stateChangeError',
         function(event, toState, toParams, fromState, fromParams, error) {
-          if ('error' != toState.name) {
-            $state.go('error');
-          }
+          //if ('error' != toState.name) {
+          //  $state.go('error');
+          //}
         }
       );
     }

@@ -12,11 +12,13 @@ angular.module('seed.directives', []).
     return {
       restrict: 'A',
       link: function(scope, element, attrs) {
-        var href = [Config.api_url, attrs.seedHref].filter(function(value) {
-          return '' != value;
-        }).join('/');
+        attrs.$observe('seedHref', function(value) {
+          var href = [Config.api_url, value].filter(function(value) {
+            return '' != value;
+          }).join('/');
 
-        element.attr('href', href);
+          element.attr('href', href);
+        });
       }
     };
   }]).
@@ -27,11 +29,13 @@ angular.module('seed.directives', []).
     return {
       restrict: 'A',  
       link: function(scope, element, attrs) {
-        var href = [Config.api_url, attrs.seedApi].filter(function(value) {
-          return '' != value;
-        }).join('/');
+        attrs.$observe('seedApi', function(value) {
+          var href = [Config.api_url, value].filter(function(value) {
+            return '' != value;
+          }).join('/');
 
-        element.text(href);
+          element.text(href);
+        });
       }
     };
   }]);
