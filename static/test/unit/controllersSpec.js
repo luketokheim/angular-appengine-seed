@@ -1,12 +1,24 @@
 'use strict';
 
 describe('Seed controllers', function() {
-  var list = {
-    items: [
-      {"created": "2013-09-19T15:31:48.906000", "id": "1", "name": "Item One"},
-      {"created": "2013-09-18T23:21:57.529000", "id": "2", "name": "Item Two"},
-    ]
-  };
+  var list = [
+    {"created": "2013-09-19T15:31:48.906000", "id": "1", "name": "Item One"},
+    {"created": "2013-09-18T23:21:57.529000", "id": "2", "name": "Item Two"}
+  ];
+  //var model = list[0];
+
+/*
+  for (var i=0; i<list.length; i++) {
+    list[i]['$save'] = function() {
+      return {
+        'then': function(fn) {
+          fn(list[i]);
+        }
+      }
+    };
+  }
+  */
+
   list['$query'] = function() {
     return {
       'then': function(fn) {
@@ -15,7 +27,7 @@ describe('Seed controllers', function() {
     }
   };
 
-  var model = list.items[0];
+  var model = list[0];
   model['$save'] = function() {
     return {
       'then': function(fn) {
@@ -26,7 +38,7 @@ describe('Seed controllers', function() {
   model['$delete'] = function() {
     return {
       'then': function(fn) {
-        fn({"id": model.id});
+        fn({id: model.id});
       }
     }
   };
@@ -50,7 +62,6 @@ describe('Seed controllers', function() {
       scope = $rootScope.$new();
       ctrl = $controller('ListCtrl', {
         $scope: scope,
-        $stateParams: stateParams,
         list: list
       });
     }));
@@ -60,7 +71,7 @@ describe('Seed controllers', function() {
     });
 
     it("should load list", function() {
-      scope.load();
+      //scope.load();
       expect(scope.list).toEqualData(list);
     });
   }); // ListCtrl
@@ -74,12 +85,20 @@ describe('Seed controllers', function() {
     };
     var ctrl = null;
     var parent = {
-      load: function() {}
+      /*
+      save: function(model) {
+        return {
+          'then': function(fn) {
+            fn(model);
+          }
+        }
+      }
+      */
     };
 
     beforeEach(inject(function($rootScope, $controller) {
       spyOn(state, 'go');
-      spyOn(parent, 'load');
+      //spyOn(parent, 'save');
 
       scope = $rootScope.$new();
       scope.$parent = parent;
@@ -101,17 +120,17 @@ describe('Seed controllers', function() {
       expect(scope.model).toEqualData(model);
       expect(scope.model.name).toBe("Hello World");
 
-      expect(parent.load).toHaveBeenCalled();
+      //expect(parent.save).toHaveBeenCalled();
     });
 
-    it("should delete model and go to parent state", function() {
+    it("should delete model and go to create state", function() {
       scope.delete();
 
       expect(scope.model).not.toEqualData(model);
       expect(scope.model.id).toBe(model.id);
 
-      expect(state.go).toHaveBeenCalledWith('^');
-      expect(parent.load).toHaveBeenCalled();
+      expect(state.go).toHaveBeenCalledWith('model.create');
+      //expect(parent.load).toHaveBeenCalled();
     });
   }); // ModelCtrl
 

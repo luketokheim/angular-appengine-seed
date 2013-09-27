@@ -3,12 +3,10 @@
 describe('Seed services', function() {
   // Canned data for List + CRUD operations.
   var list = {
-    items: [
-      {"created": "2013-09-19T15:31:48.906000", "id": "1", "name": "Item One"},
-      {"created": "2013-09-18T23:21:57.529000", "id": "2", "name": "Item Two"},
-    ]
+    {"created": "2013-09-19T15:31:48.906000", "id": "1", "name": "Item One"},
+    {"created": "2013-09-18T23:21:57.529000", "id": "2", "name": "Item Two"}
   };
-  var model = list.items[0];
+  var model = list[0];
   var update_model = model;
   update_model.name = "Updated Name";
   var create_model =

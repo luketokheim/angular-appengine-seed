@@ -34,11 +34,8 @@ angular.module('seed', ['ui.router', 'restangular',
             //list: function() {
             //  return null;
             //}
-            //list: ['Model', '$stateParams', function(Model, $stateParams) {
-            //  return Model.query($stateParams).$promise;
-            //}]
-            list: ['Restangular', '$stateParams', function(Restangular, $stateParams) {
-              return Restangular.all('model').getList();
+            list: ['Model', '$stateParams', function(Model, $stateParams) {
+              return Model.query($stateParams).$promise;
             }]
           }          
         }).
@@ -53,11 +50,8 @@ angular.module('seed', ['ui.router', 'restangular',
           templateUrl: '/app/partials/model.detail.html',
           controller: 'ModelCtrl',
           resolve: {
-            //model: ['Model', function(Model) {
-            //  return new Model();
-            //}]
-            model: ['Restangular', function(Restangular) {
-              return Restangular.one('model');
+            model: ['Model', function(Model) {
+              return new Model();
             }]
           }
         }).
@@ -66,17 +60,24 @@ angular.module('seed', ['ui.router', 'restangular',
           templateUrl: '/app/partials/model.detail.html',
           controller: 'ModelCtrl',
           resolve: {
-            model: ['Restangular', '$stateParams', function(Restangular, $stateParams) {
-              return Restangular.one('model', $stateParams.id).get();
+            model: ['Model', '$stateParams', function(Model, $stateParams) {
+              return Model.get($stateParams).$promise;
+            }]
+          }
+        }).
+        state('one', {
+          url: '/one/{id}',
+          templateUrl: '/app/partials/model.detail.html',
+          controller: 'ModelCtrl',
+          resolve: {
+            model: ['Model', '$stateParams', function(Model, $stateParams) {
+              return Model.get($stateParams).$promise;
             }]
           }
         });
 
       // Default route.
       $urlRouterProvider.otherwise('model');
-
-      RestangularProvider.setBaseUrl(Config.api_base_url);
-      RestangularProvider.setMethodOverriders(['put']);
     }
   ]).
   run(['$rootScope', '$state', '$stateParams',

@@ -1,4 +1,4 @@
-<form name="form" ng-submit="save()" novalidate>
+<form name="form" ng-submit="save(model)" novalidate>
   <div class="input-group">
     <input
       ng-model="model.name"
@@ -24,6 +24,6 @@
   </p>
 </div>
 
-<button ng-if="model.id" ng-click="delete()" class="btn btn-danger">
+<button ng-if="model.id" ng-click="delete(model)" class="btn btn-danger">
   <span class="glyphicon glyphicon-trash"></span> Delete
 </button>

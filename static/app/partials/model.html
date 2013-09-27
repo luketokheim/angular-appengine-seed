@@ -1,3 +1,6 @@
+<!--
+  Responsive layout. Two columns that stack on mobile and narrow windows.
+-->
 <div class="row">
   <div class="col-md-4">
     <!-- List of most recent items. -->
@@ -7,7 +10,7 @@
          class="list-group-item">
         <span class="glyphicon glyphicon-plus"></span> Add Item
       </a>
-      <a ng-repeat="model in list.items"
+      <a ng-repeat="model in list"
          ng-class="{active: $stateParams.id === model.id}"
          ui-sref="model.detail({id: model.id})"
          class="list-group-item">
