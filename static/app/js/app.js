@@ -2,18 +2,63 @@
 
 // Declare the application module and declare its dependencies. By convention,
 // app specific sub-modules are named "seed.*". 
-angular.module('seed', ['ui.router', 'restangular',
+angular.module('seed', ['ngRoute', 'ui.router',
                         'seed.controllers', 'seed.directives',
                         'seed.filters', 'seed.services']).
   constant('Config', {
     'app_url': 'https://angular-seed.appspot.com',
     'api_url': '/_ah/api/seed/v1/model',
-    'api_base_url': '/_ah/api/seed/v1',
     'list_limit': 5,
     'version': 1
   }).
-  config(['$stateProvider', '$urlRouterProvider', 'RestangularProvider', 'Config',
-    function($stateProvider, $urlRouterProvider, RestangularProvider, Config) {
+  config(['$routeProvider', '$locationProvider',
+    function($routeProvider, $locationProvider) {
+      $routeProvider.
+        when('/about', {
+          templateUrl: '/app/partials/about.html'
+        }).
+        when('/error', {
+          templateUrl: '/app/partials/error.html'
+        }).
+        when('/model', {
+          templateUrl: '/app/partials/model.html',
+          controller: 'ListCtrl',
+          resolve: {
+            list: ['Model', '$route', function(Model, $route) {
+              return Model.query($route.current.params).$promise;
+            }]
+          }
+        }).
+        when('/model/create', {
+          templateUrl: '/app/partials/model.html',
+          controller: 'ListCtrl',
+          resolve: {
+            list: ['Model', function(Model) {
+              return new Model();
+            }]
+          }
+        }).
+        when('/model/:id', {
+          templateUrl: '/app/partials/model.detail.html',
+          controller: 'ModelCtrl',
+          resolve: {
+            model: ['Model', '$route', function(Model, $route) {
+              return Model.get($route.current.params).$promise;
+            }]
+          }
+        }).
+        otherwise({redirectTo: '/model'});
+    }
+  ]).
+  run(['$rootScope', '$location', '$routeParams',
+    function($rootScope, $location, $routeParams) {
+      $rootScope.$location = $location;
+      $rootScope.$routeParams = $routeParams;
+    }
+  ]);
+  /*
+  config(['$stateProvider', '$urlRouterProvider', 'Config',
+    function($stateProvider, $urlRouterProvider, Config) {
       // View routing. Associate views with their controllers. In this example,
       // we also resolve the initial data for views before displaying them.
       $stateProvider.
@@ -24,16 +69,13 @@ angular.module('seed', ['ui.router', 'restangular',
         state('error', {
           url: '/error',
           templateUrl: '/app/partials/error.html'
-        }).        
+        }).
         state('model', {
           url: '/model',
           templateUrl: '/app/partials/model.html',
           abstract: true,
           controller: 'ListCtrl',
           resolve: {
-            //list: function() {
-            //  return null;
-            //}
             list: ['Model', '$stateParams', function(Model, $stateParams) {
               return Model.query($stateParams).$promise;
             }]
@@ -65,8 +107,9 @@ angular.module('seed', ['ui.router', 'restangular',
             }]
           }
         }).
-        state('one', {
-          url: '/one/{id}',
+        // Non-nested view of a single model.
+        state('detail', {
+          url: '/model/{id}/detail',
           templateUrl: '/app/partials/model.detail.html',
           controller: 'ModelCtrl',
           resolve: {
@@ -80,6 +123,8 @@ angular.module('seed', ['ui.router', 'restangular',
       $urlRouterProvider.otherwise('model');
     }
   ]).
+*/
+/*
   run(['$rootScope', '$state', '$stateParams',
     function($rootScope, $state, $stateParams) {
       // As per ui-router docs...
@@ -92,14 +137,18 @@ angular.module('seed', ['ui.router', 'restangular',
       $rootScope.$state = $state;
       $rootScope.$stateParams = $stateParams;
 
-      // Use this to detect when a resolve fails during a view change. Show an
-      // error page.
+      // Use this to detect when a resolve fails during a view/controller
+      // change. Show an error page.
       $rootScope.$on('$stateChangeError',
         function(event, toState, toParams, fromState, fromParams, error) {
-          //if ('error' != toState.name) {
-          //  $state.go('error');
-          //}
+          //if ('model.detail' === toState.name) {
+          //  $state.go('model.list');
+          //} else
+          if ('error' !== toState.name) {
+            $state.go('error');
+          }
         }
       );
     }
   ]);
+  */

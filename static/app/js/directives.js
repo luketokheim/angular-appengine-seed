@@ -38,4 +38,52 @@ angular.module('seed.directives', []).
         });
       }
     };
+  }]).
+  directive('seedList', [function() {
+    return {
+      restrict: 'A',
+      link: function(scope, element, attrs) {
+        element.text("Hello World");
+      }
+    };
+  }]).
+  directive('seedRoute', [function() {
+    return {
+      restrict: 'A',
+      replace: false,
+      transclude: true,
+      //template: '<a href="{{value}}">Text</a>',
+      scope: {
+        href: '@seedRoute',
+        path: '='
+      },
+      template: '<a href="#{{href}}" ng-transclude></a>',
+      link: function(scope, element, attrs) {
+        scope.$watch('path', function(value) {
+          console.log(value);
+          if (value === scope.href) {
+            element.addClass('active');
+          } else {
+            element.removeClass('active');
+          }
+        });
+      }
+
+      /*
+      link: function(scope, element, attrs) {
+        attrs.$observe('seedRoute', function(value) {
+          var href = ['#', value].join('');
+          if (value === scope.path) {
+            element.addClass('active');
+          } else {
+            element.removeClass('active');
+          }
+          console.log(value);
+
+          var a = angular.element(element.children()[0]);
+          a.attr('href', href);
+        });
+      }
+      */
+    };
   }]);

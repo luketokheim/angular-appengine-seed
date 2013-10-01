@@ -1,10 +1,12 @@
-<form name="form" ng-submit="save(model)" novalidate>
+<form name="form" ng-submit="submit(form, model)" novalidate>
   <div class="input-group">
     <input
       ng-model="model.name"
       class="form-control" type="text" placeholder="Name" required autofocus>
     <span class="input-group-btn">
-      <button ng-disabled="!form.$dirty" class="btn btn-primary">
+      <button
+        ng-disabled="form.$invalid || !form.$dirty"
+        class="btn btn-primary">
         <span class="glyphicon glyphicon-ok"></span> Save
       </button> 
     </span>
@@ -13,17 +15,26 @@
 
 <div style="margin-top: 1em;">
   <p ng-if="model.id">
-    <a seed-href="{{model.id}}">Read</a> one item by id.
+    <a seed-href="{{model.id}}">Read</a> an item by id.
     <br>
     <code>GET <span seed-api="{{model.id}}"></span></code>
   </p>
   <p ng-if="!model.id">
-    Create one item.
+    Create an item.
     <br>
     <code>POST <span seed-api></span></code>
   </p>
 </div>
 
-<button ng-if="model.id" ng-click="delete(model)" class="btn btn-danger">
-  <span class="glyphicon glyphicon-trash"></span> Delete
-</button>
+<div ng-if="model.id">
+  <button
+    ng-click="delete(model)"
+    class="btn btn-danger">
+    <span class="glyphicon glyphicon-trash"></span> Delete
+  </button>
+  <p>
+    Delete an item by id.
+    <br>
+    <code>DELETE <span seed-api="{{model.id}}"></span></code>
+  </p>
+</div>

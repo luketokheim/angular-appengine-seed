@@ -21,7 +21,11 @@ handlers:
   static_dir: static/test
   secure: always
 
-# Cloud Endpoints handler. 
+# Cloud Endpoints handler.
 - url: /_ah/spi/.*
   script: services.app
   secure: always
+
+libraries:
+- name: endpoints
+  version: "1.0"

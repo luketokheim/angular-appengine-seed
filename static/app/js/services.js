@@ -6,8 +6,7 @@ angular.module('seed.services', ['ngResource'])
   .factory('Model', ['$resource', 'Config', function($resource, Config) {
     return $resource([Config.api_url, ':id'].join('/'), {id: '@id'}, {
       // Query returns an object with paging tokens and an array named
-      // 'items'. ngResource expects a simple array by default. The defaults
-      // work for the other methods (read, save, delete).
+      // 'items'. ngResource expects a simple array by default.
       query: {
         method: 'GET',
         isArray: true,
@@ -19,6 +18,14 @@ angular.module('seed.services', ['ngResource'])
           } else {
             return [];
           }
+        }
+      },
+      // Delete sends the object data in the request body. This is not
+      // supported on the App Engine. Filter it out manually.
+      delete: {
+        method: 'DELETE',
+        transformRequest: function(data, headersGetter) {
+          return null;
         }
       }
     });

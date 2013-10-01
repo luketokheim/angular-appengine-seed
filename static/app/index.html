@@ -10,28 +10,42 @@
   <!-- Navbar. Just standard Bootstrap except for the active item class
   selectors and the named state <a ui-sref> directive.
   -->
-  <nav class="navbar navbar-static-top navbar-inverse" role="navigation">
+  <nav
+    class="navbar navbar-static-top navbar-inverse"
+    role="navigation"
+    ng-init="path=$location.path()">
     <div class="navbar-header"> 
-      <a class="navbar-brand" ui-sref="model.list">List</a>
+      <a class="navbar-brand" href="#/model">List</a>
     </div>
     <div class="navbar-collapse">
       <ul class="nav navbar-nav">
-        <li ng-class="{active: $state.is('model.create')}">
-          <a ui-sref="model.create">Add Item</a>
+        <li seed-route="/model/create">Add Item</li>
+        <li seed-route="/about">About</li>
+
+        <li ng-class="{active: '/model/create' == $location.path()}">
+          <a href="#/model/create">Add Item</a>
         </li>
-        <li ng-class="{active: $state.is('about')}">
-          <a ui-sref="about">About</a>
+        <li ng-class="{active: '/about' == $location.path()}">
+          <a href="#/about">About</a>
         </li>
       </ul>
     </div>
   </nav>
 
+  {{$location.path()}}
+
   <!-- View container. -->
-  <div class="container" ui-view></div>
+  <div class="container" ng-view></div>
+
+  <script type="text/ng-template" id="/app/partials/error.html">
+    <h1>Sorry!</h1>
+    <p>We were unable to access the data store.</p>
+  </script>
 
   <!-- Library files. -->
   <script src="/app/lib/angular/angular.js"></script>
   <script src="/app/lib/angular/angular-resource.js"></script>
+  <script src="/app/lib/angular/angular-route.js"></script>
   <script src="/app/lib/angular/angular-ui-router.js"></script>
   <script src="/app/lib/moment.js"></script>
   <script src="/app/lib/restangular.js"></script>

@@ -28,5 +28,9 @@
       <code>GET <span seed-api></span></code>
     </p>
   </div>
-  <div class="col-md-8" ui-view></div>
+  <div class="col-md-8" ui-view>
+    <div ng-if="model.id">
+      {{model.id}}
+    </div>
+  </div>
 </div>
