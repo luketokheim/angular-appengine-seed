@@ -1,6 +1,6 @@
 /**
  * State-based routing for AngularJS
- * @version v0.2.0
+ * @version v0.2.0-dev-2013-10-01
  * @link http://angular-ui.github.com/
  * @license MIT License, http://www.opensource.org/licenses/MIT
  */
@@ -214,7 +214,7 @@ function $Resolve(  $q,    $injector) {
         }
         // Wait for any parameter that we have a promise for (either from parent or from this
         // resolve; in that case study() will have made sure it's ordered before us in the plan).
-        params.forEach(function (dep) {
+        forEach(params, function (dep) {
           if (promises.hasOwnProperty(dep) && !locals.hasOwnProperty(dep)) {
             waitParams++;
             promises[dep].then(function (result) {
@@ -784,7 +784,7 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory,           $
     // inherit 'data' from parent and override by own values (if any)
     data: function(state) {
       if (state.parent && state.parent.data) {
-        state.data = state.self.data = angular.extend({}, state.parent.data, state.data);
+        state.data = state.self.data = extend({}, state.parent.data, state.data);
       }
       return state.data;
     },
@@ -869,11 +869,14 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory,           $
     }
   };
 
+  function isRelative(stateName) {
+    return stateName.indexOf(".") === 0 || stateName.indexOf("^") === 0;
+  }
 
   function findState(stateOrName, base) {
     var isStr = isString(stateOrName),
         name  = isStr ? stateOrName : stateOrName.name,
-        path  = name.indexOf(".") === 0 || name.indexOf("^") === 0;
+        path  = isRelative(name);
 
     if (path) {
       if (!base) throw new Error("No reference point given for path '"  + name + "'");
@@ -979,7 +982,11 @@ function $StateProvider(   $urlRouterProvider,   $urlMatcherFactory,           $
       options = extend({ location: true, inherit: false, relative: null }, options);
 
       var toState = findState(to, options.relative);
-      if (!isDefined(toState)) throw new Error("No such state " + toState);
+
+      if (!isDefined(toState)) {
+         if (options.relative) throw new Error("Could not resolve '" + to + "' from state '" + options.relative + "'");
+         throw new Error("No such state '" + to + "'");
+      }
       if (toState['abstract']) throw new Error("Cannot transition to abstract state '" + to + "'");
       if (options.inherit) toParams = inheritParams($stateParams, toParams || {}, $state.$current, toState);
       to = toState;
@@ -1216,60 +1223,45 @@ function $ViewProvider() {
 angular.module('ui.router.state').provider('$view', $ViewProvider);
 
 
-$ViewDirective.$inject = ['$state', '$compile', '$controller', '$injector', '$anchorScroll'];
-function $ViewDirective(   $state,   $compile,   $controller,   $injector,   $anchorScroll) {
-  // TODO: Change to $injector.has() when we version bump to Angular 1.1.5.
-  // See: https://github.com/angular/angular.js/blob/master/CHANGELOG.md#115-triangle-squarification-2013-05-22
-  var $animator; try { $animator = $injector.get('$animator'); } catch (e) { /* do nothing */ }
-  var viewIsUpdating = false;
+$ViewDirective.$inject = ['$state', '$compile', '$controller', '$anchorScroll', '$injector'];
+function $ViewDirective($state, $compile, $controller, $anchorScroll, $injector) {
+
+  var viewIsUpdating = false,
+      $animate = $injector.has('$animate') ? $injector.get('$animate') : null;
+
+  // Returns a set of DOM manipulation functions based on whether animation
+  // should be performed
+  var renderer = function (doAnimate) {
+    return ({
+      "true": {
+        leave: function (element) { $animate.leave(element); },
+        enter: function (element, anchor) { $animate.enter(element, null, anchor); }
+      },
+      "false": {
+        leave: function (element) { element.remove(); },
+        enter: function (element, anchor) { anchor.after(element); }
+      }
+    })[($animate && doAnimate).toString()];
+  };
 
   var directive = {
     restrict: 'ECA',
-    terminal: true,
-    transclude: true,
-    compile: function (element, attr, transclude) {
-      return function(scope, element, attr) {
-        var viewScope, viewLocals,
-            name = attr[directive.name] || attr.name || '',
-            onloadExp = attr.onload || '',
-            animate = isDefined($animator) && $animator(scope, attr);
+    compile: function (element, attrs) {
+      var defaultContent = element.html(), isDefault = true,
+          anchor = angular.element(document.createComment(' ui-view '));
 
-        // Returns a set of DOM manipulation functions based on whether animation
-        // should be performed
-        var renderer = function(doAnimate) {
-          return ({
-            "true": {
-              remove: function(element) { animate.leave(element.contents(), element); },
-              restore: function(compiled, element) { animate.enter(compiled, element); },
-              populate: function(template, element) {
-                var contents = angular.element('<div></div>').html(template).contents();
-                animate.enter(contents, element);
-                return contents;
-              }
-            },
-            "false": {
-              remove: function(element) { element.html(''); },
-              restore: function(compiled, element) { element.append(compiled); },
-              populate: function(template, element) {
-                element.html(template);
-                return element.contents();
-              }
-            }
-          })[doAnimate.toString()];
-        };
+      element.prepend(anchor);
 
-        // Put back the compiled initial view
-        element.append(transclude(scope));
+      return function ($scope) {
+        var currentScope, currentElement, viewLocals,
+            name = attrs[directive.name] || attrs.name || '',
+            onloadExp = attrs.onload || '';
 
-        // Find the details of the parent view directive (if any) and use it
-        // to derive our own qualified view name, then hang our own details
-        // off the DOM so child directives can find it.
         var parent = element.parent().inheritedData('$uiView');
-        if (name.indexOf('@') < 0) name  = name + '@' + (parent ? parent.state.name : '');
+        if (name.indexOf('@') < 0) name = name + '@' + (parent ? parent.state.name : '');
         var view = { name: name, state: null };
-        element.data('$uiView', view);
 
-        var eventHook = function() {
+        var eventHook = function () {
           if (viewIsUpdating) return;
           viewIsUpdating = true;
 
@@ -1280,46 +1272,70 @@ function $ViewDirective(   $state,   $compile,   $controller,   $injector,   $an
           viewIsUpdating = false;
         };
 
-        scope.$on('$stateChangeSuccess', eventHook);
-        scope.$on('$viewContentLoading', eventHook);
+        $scope.$on('$stateChangeSuccess', eventHook);
+        $scope.$on('$viewContentLoading', eventHook);
+
         updateView(false);
 
+        function cleanupLastView() {
+          if (currentElement) {
+            renderer(true).leave(currentElement);
+            currentElement = null;
+          }
+
+          if (currentScope) {
+            currentScope.$destroy();
+            currentScope = null;
+          }
+        }
+
         function updateView(doAnimate) {
-          var locals = $state.$current && $state.$current.locals[name];
-          if (locals === viewLocals) return; // nothing to do
-          var render = renderer(animate && doAnimate);
+          var locals = $state.$current && $state.$current.locals[name],
+              render = renderer(doAnimate);
 
-          // Remove existing content
-          render.remove(element);
-
-          // Destroy previous view scope
-          if (viewScope) {
-            viewScope.$destroy();
-            viewScope = null;
+          if (isDefault) {
+            isDefault = false;
+            element.replaceWith(anchor);
           }
 
           if (!locals) {
-            viewLocals = null;
-            view.state = null;
+            cleanupLastView();
+            currentElement = element.clone();
+            currentElement.html(defaultContent);
+            render.enter(currentElement, anchor);
 
-            // Restore the initial view
-            return render.restore(transclude(scope), element);
+            currentScope = $scope.$new();
+            $compile(currentElement.contents())(currentScope);
+            return;
           }
+
+          if (locals === viewLocals) return; // nothing to do
+
+          cleanupLastView();
+
+          currentElement = element.clone();
+          currentElement.html(locals.$template ? locals.$template : defaultContent);
+          render.enter(currentElement, anchor);
+
+          currentElement.data('$uiView', view);
 
           viewLocals = locals;
           view.state = locals.$$state;
 
-          var link = $compile(render.populate(locals.$template, element));
-          viewScope = scope.$new();
+          var link = $compile(currentElement.contents());
+
+          currentScope = $scope.$new();
 
           if (locals.$$controller) {
-            locals.$scope = viewScope;
+            locals.$scope = currentScope;
             var controller = $controller(locals.$$controller, locals);
-            element.children().data('$ngControllerController', controller);
+            currentElement.children().data('$ngControllerController', controller);
           }
-          link(viewScope);
-          viewScope.$emit('$viewContentLoaded');
-          if (onloadExp) viewScope.$eval(onloadExp);
+
+          link(currentScope);
+
+          currentScope.$emit('$viewContentLoaded');
+          if (onloadExp) currentScope.$eval(onloadExp);
 
           // TODO: This seems strange, shouldn't $anchorScroll listen for $viewContentLoaded if necessary?
           // $anchorScroll might listen on event...
@@ -1370,7 +1386,7 @@ function $StateRefDirective($state) {
 
       if (ref.paramExpr) {
         scope.$watch(ref.paramExpr, function(newVal, oldVal) {
-          if (newVal !== oldVal) update(newVal);
+          if (newVal !== params) update(newVal);
         }, true);
         params = scope.$eval(ref.paramExpr);
       }

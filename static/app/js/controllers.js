@@ -38,7 +38,22 @@ angular.module('seed.controllers', []).
   ]).
   controller('ModelCtrl', ['$scope', '$state', 'model',
     function($scope, $state, model) {
-      $scope.model = model;
+      if (model) {
+        // Resolved before loading the controller.
+        $scope.model = model;
+      } else if ('id' in $state.params) {
+        // Copy item from the parent list.
+        var idx = -1;
+        if ('indexOf' in $scope.$parent) {
+          idx = $scope.$parent.indexOf($state.params.id);
+        }
+
+        if (idx >= 0) {
+          $scope.model = $scope.$parent.list[idx];
+        } else {
+          $state.go('detail', {id: $state.params.id});
+        }
+      }
 
       $scope.save = function(model) {
         var id = model.id;

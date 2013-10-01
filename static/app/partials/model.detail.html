@@ -13,7 +13,7 @@
   </div>
 </form>
 
-<div style="margin-top: 1em;">
+<div ng-if="$config.debug" style="margin-top: 1em;">
   <p ng-if="model.id">
     <a seed-href="{{model.id}}">Read</a> an item by id.
     <br>
@@ -26,13 +26,13 @@
   </p>
 </div>
 
-<div ng-if="model.id">
+<div ng-if="model.id" style="margin-top: 1em;">
   <button
     ng-click="delete(model)"
     class="btn btn-danger">
     <span class="glyphicon glyphicon-trash"></span> Delete
   </button>
-  <p>
+  <p ng-if="$config.debug">
     Delete an item by id.
     <br>
     <code>DELETE <span seed-api="{{model.id}}"></span></code>
