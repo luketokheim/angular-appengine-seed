@@ -2,12 +2,16 @@
 
 describe('Seed services', function() {
   // Canned data for List + CRUD operations.
-  var list = {
-    {"created": "2013-09-19T15:31:48.906000", "id": "1", "name": "Item One"},
-    {"created": "2013-09-18T23:21:57.529000", "id": "2", "name": "Item Two"}
+  var query = {
+    "items": [
+      {"created": "2013-09-19T15:31:48.906000", "id": "1", "name": "Item One"},
+      {"created": "2013-09-18T23:21:57.529000", "id": "2", "name": "Item Two"}
+    ]
   };
+  var list = query.items;
   var model = list[0];
-  var update_model = model;
+
+  var update_model = angular.copy(model);
   update_model.name = "Updated Name";
   var create_model =
     {"created": "2013-09-20T12:02:10.128000", "id": "3", "name": "Item Three"};
@@ -22,7 +26,9 @@ describe('Seed services', function() {
 
   var MockConfig = {
     api_url: '/api',
-    version: '1'
+    debug: false,
+    list_limit: 5,
+    version: 1
   };
   
   beforeEach(module(function($provide) {
@@ -42,7 +48,7 @@ describe('Seed services', function() {
       // Query.
       $httpBackend.
         when('GET', [MockConfig.api_url, 'limit=5'].join('?')).
-        respond(200, list);
+        respond(200, query);
       // Create.
       $httpBackend.
         when('POST', MockConfig.api_url).
@@ -91,7 +97,7 @@ describe('Seed services', function() {
       var data = Model.save(update_model);
       $httpBackend.flush();
 
-      expect(data).toEqualData(model);
+      expect(data).toEqualData(update_model);
     });
 
     it('should delete an item by id', function() {
@@ -99,19 +105,6 @@ describe('Seed services', function() {
       $httpBackend.flush();
 
       expect(data).toEqualData({id: model.id});
-    });
-
-    it('should get a list with Model.$query method', function() {
-      var data = Model.query();
-      $httpBackend.flush();
-
-      expect(data).toEqualData(list);
-
-      list.items.push(create_model);
-      data.$query();
-      $httpBackend.flush();
-
-      expect(data).toEqualData(list);
     });
 
     it('should create with Model.$save method', function() {

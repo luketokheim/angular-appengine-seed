@@ -48,8 +48,8 @@ describe('Seed', function() {
     it('should highlight one item in the list', function() {
       expect(repeater('a.list-group-item[ng-repeat]').count()).
         toBeGreaterThan(0);
-      expect(repeater('a.list-group-item[ng-repeat]').count()).
-        toBeLessThan(6);
+      //expect(repeater('a.list-group-item[ng-repeat]').count()).
+      //  toBeLessThan(6);
       expect(repeater('a.list-group-item.active[ng-repeat]').count()).
         toBe(1);
     });

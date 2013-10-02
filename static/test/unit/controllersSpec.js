@@ -1,6 +1,7 @@
 'use strict';
 
 describe('Seed controllers', function() {
+  // Canned data for the list controller.
   var list = [
     {"created": "2013-09-19T15:31:48.906000", "id": "1", "name": "Item One"},
     {"created": "2013-09-18T23:21:57.529000", "id": "2", "name": "Item Two"}
@@ -16,6 +17,7 @@ describe('Seed controllers', function() {
     }
   };
 
+  // Create ngResource method wrappers per item.
   list = list.map(function(item) {
     item['$save'] = function(fn) {
       var model = self;
@@ -46,6 +48,7 @@ describe('Seed controllers', function() {
     return item;
   });
 
+  // Canned data for the model (single item) controller.
   var model = list[0];
 
   beforeEach(function() {
@@ -67,7 +70,7 @@ describe('Seed controllers', function() {
       scope = $rootScope.$new();
       ctrl = $controller('ListCtrl', {
         $scope: scope,
-        list: list
+        list: angular.copy(list)
       });
     }));
 
@@ -79,23 +82,29 @@ describe('Seed controllers', function() {
       expect(scope.list).toEqualData(list);
     });
 
-    it('should find item 0 in list', function() {
+    it('should find item 1 in list', function() {
       expect(scope.indexOf(model.id)).toBe(0);
     });
 
-    it('should remove item 0 from list', function() {
+    it('should add item to list', function() {
+      var create_model = angular.copy(model);
+      delete create_model.id;
+      create_model.name = "Item Three";
+
+      expect(scope.indexOf(model.id)).toBe(0);
+      expect(scope.indexOf(create_model.id)).toBe(-1);
+      expect(scope.list.length).toBe(2);
+      scope.save(create_model);
+      expect(scope.list.length).toBe(3);
+      expect(scope.indexOf(create_model.id)).toBe(0);
+      expect(scope.indexOf(model.id)).toBe(1);
+    });
+
+    it('should remove item 1 from list', function() {
       expect(scope.list.length).toBe(2);
       scope.delete(model);
       expect(scope.list.length).toBe(1);
       expect(scope.indexOf(model.id)).toBe(-1);
-    });
-
-    it('should add item to list', function() {
-      expect(scope.indexOf(model.id)).toBe(-1);
-      expect(scope.list.length).toBe(1);
-      scope.save(model);
-      expect(scope.list.length).toBe(2);
-      expect(scope.indexOf(model.id)).toBe(0);
     });
 
     it('it should remove all items from list', function() {
@@ -106,6 +115,16 @@ describe('Seed controllers', function() {
 
       expect(scope.list.length).toBe(0);
     });
+
+    it('should update item 1 in list', function() {
+      expect(scope.list.length).toBe(2);
+      model.name = "Hello World";
+      scope.save(model);
+      expect(scope.list.length).toBe(2);
+
+      expect(scope.list[0].name).toBe("Hello World");
+      expect(scope.list[0]).toEqualData(model);
+    });
   }); // ListCtrl
 
   describe('ModelCtrl', function() {
@@ -113,21 +132,52 @@ describe('Seed controllers', function() {
 
     var scope = null;
     var state = {
-      go: function(name, param) {}
+      params: {id: model.id},
+      go: function(name, param) {},
+      save: function() {},
+      delete: function() {}
     };
     var ctrl = null;
     var parent = {
       list: list,
       save: function(model) {
+        state.save();
         return model.$save();
       },
       delete: function(model) {
+        state.delete();
         return model.$delete();
+      },
+      indexOf: function(id) {
+        if (model.id === id) {
+          return 0;
+        } else {
+          return -1;
+        }
       }
     };
 
+    // First option. Copy initial data from the parent list.
+    beforeEach(inject(function($rootScope, $controller) {
+      scope = $rootScope.$new();
+      scope.$parent = parent;
+      ctrl = $controller('ModelCtrl', {
+        $scope: scope,
+        $state: state,
+        model: null
+      }); 
+    }));
+
+    it("should initialize model without resolve", function() {
+      expect(scope.model).toEqualData(model);
+    });
+
+    // Second option. Make separate ngResource call and object for the 
+    // initial data.
     beforeEach(inject(function($rootScope, $controller) {
       spyOn(state, 'go');
+      spyOn(state, 'save');
+      spyOn(state, 'delete');
 
       scope = $rootScope.$new();
       scope.$parent = parent;
@@ -142,12 +192,21 @@ describe('Seed controllers', function() {
       expect(scope.model).toEqualData(model);
     });
 
+    it("should initialize parent", function() {
+      expect(scope.$parent.list).toEqualData(list);
+    });
+
+    it("should load model from parent list", function() {
+      expect(scope.$parent.list[0]).toEqualData(scope.model);
+    });
+
     it("should save model", function() {
       scope.model.name = "Hello World";
       scope.save(scope.model);
 
       expect(scope.model).toEqualData(model);
       expect(scope.model.name).toBe("Hello World");
+      expect(state.save).toHaveBeenCalled();
     });
 
     it("should delete model and go to create state", function() {
@@ -155,16 +214,18 @@ describe('Seed controllers', function() {
 
       expect(scope.model.id).toBe(model.id);
 
+      expect(state.delete).toHaveBeenCalled();
       expect(state.go).toHaveBeenCalledWith('model.create');
     });
 
     it("should create model", function() {
-      delete scope.model.id;
-      scope.save({"name": "New One"});
+      var create_model = angular.copy(model);
+      delete create_model.id;
+      create_model.name = "Item Three";
 
-      expect(scope.model).toEqualData(model);
-      console.log(model);
-      //expect(scope.model.name).toBe("Hello World");
+      scope.save(create_model);
+
+      expect(state.save).toHaveBeenCalled();
     });
   }); // ModelCtrl
 

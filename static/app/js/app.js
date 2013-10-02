@@ -7,13 +7,13 @@ angular.module('seed', ['ui.router',
                         'seed.filters', 'seed.services', 'seed.states']).
   constant('Config', {
     // REST service.
-    'api_url': '/_ah/api/seed/v1/model',
+    api_url: '/_ah/api/seed/v1/model',
     // Display more technical information in views.
-    'debug': false,
+    debug: false,
     // Default limit on the list of items we request in a query.
-    'list_limit': 5,
+    list_limit: 5,
     // Application version.
-    'version': 1
+    version: 1
   }).
   run(['$rootScope', '$state', '$stateParams', 'Config',
     function($rootScope, $state, $stateParams, Config) {
