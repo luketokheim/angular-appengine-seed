@@ -23,9 +23,10 @@
       </a>
     </div>
     <p ng-if="$config.debug">
-      <a seed-href>List</a> the most recent items.
+      <a seed-href="?limit={{$config.list_limit}}">List</a> the most recent
+      items.
       <br>
-      <code>GET <span seed-api></span></code>
+      <code>GET <span seed-api="?limit={{$config.list_limit}}"></span></code>
     </p>
   </div>
   <div class="col-md-8" ui-view></div>

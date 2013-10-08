@@ -16,7 +16,7 @@ handlers:
   static_dir: static/app
   secure: always
 
-# Application test files.
+# Angular application test files.
 - url: /test
   static_dir: static/test
   secure: always

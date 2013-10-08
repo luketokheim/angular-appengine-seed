@@ -30,7 +30,8 @@ angular.module('seed', ['ui.router',
       $rootScope.$config = Config;
 
       // Use this to detect when a resolve fails during a view/controller
-      // change. Show an error page.
+      // change. This would probably indicate a communication error with the
+      // API. Show an error page.
       $rootScope.$on('$stateChangeError',
         function(event, toState, toParams, fromState, fromParams, error) {
           if ('error' !== toState.name) {

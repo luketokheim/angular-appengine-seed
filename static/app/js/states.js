@@ -1,5 +1,8 @@
 'use strict';
 
+// Declare view states using the ui-router syntax. Often included in the main
+// app module but split it out for this example application since it is a major
+// feature.
 angular.module('seed.states', []).
   config(['$stateProvider', '$urlRouterProvider',
     function($stateProvider, $urlRouterProvider) {
@@ -23,7 +26,7 @@ angular.module('seed.states', []).
             list: ['Model', '$stateParams', function(Model, $stateParams) {
               return Model.query($stateParams).$promise;
             }]
-          }          
+          }
         }).
         // Using the ui-router dot syntax. The next three views are nested
         // inside the view named "model".
@@ -46,12 +49,14 @@ angular.module('seed.states', []).
           templateUrl: '/app/partials/model.detail.html',
           controller: 'ModelCtrl',
           resolve: {
-            //model: ['Model', '$stateParams', function(Model, $stateParams) {
-            //  return Model.get($stateParams).$promise;
-            //}]
-            model: function() {
-              return null;
-            }
+            // Option 1. Always load the individual model.
+            model: ['Model', '$stateParams', function(Model, $stateParams) {
+              return Model.get($stateParams).$promise;
+            }]
+            // Option 2. Copy the model from the parent list.
+            //model: function() {
+            //  return null;
+            //}
           }
         }).
         // Non-nested view of a single model.

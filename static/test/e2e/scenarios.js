@@ -30,28 +30,22 @@ describe('Seed', function() {
     });
 
     it('should edit and item and stay in its detail view', function() {
-      //browser().navigateTo('/#/model/5051225137479680');
-      //var future = repeater('a[ui-sref]').count();
-      //console.log(future);
-      //var url = future.execute(function(value) { return value; });
-      //console.log(url);
-
       input('model.name').enter('I changed my mind...');
       element('.btn-primary').click();
 
       expect(binding('model.name')).toBe('I changed my mind...');
-
-      //expect(browser().location().url()).toBe(url);
-      //expect(browser().location().url()).toBe(url);
     });
 
     it('should highlight one item in the list', function() {
       expect(repeater('a.list-group-item[ng-repeat]').count()).
         toBeGreaterThan(0);
-      //expect(repeater('a.list-group-item[ng-repeat]').count()).
-      //  toBeLessThan(6);
       expect(repeater('a.list-group-item.active[ng-repeat]').count()).
         toBe(1);
+    });
+
+    it('should delete one item and go to the create view', function() {
+      element('.btn-danger').click();
+      expect(browser().location().url()).toBe('/model/create');
     });
   }); // Detail view
 

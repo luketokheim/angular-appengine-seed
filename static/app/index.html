@@ -23,6 +23,10 @@
           <a ui-sref="about">About</a>
         </li>
       </ul>
+      <button
+        class="btn btn-default navbar-btn pull-right"
+        ng-class="{'active': $config.debug}"
+        ng-click="$config.debug=!$config.debug">API</button>
     </div>
   </nav>
 

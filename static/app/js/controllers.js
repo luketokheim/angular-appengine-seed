@@ -1,41 +1,46 @@
 'use strict';
 
+// Controllers contain the application/business logic needed for a single view.
+// A controller is associated with an Angular scope object, all of the data
+// available to populate an HTML template.
 angular.module('seed.controllers', []).
-  controller('ListCtrl', ['$scope', 'list',
-    function($scope, list) {
-      $scope.list = list;
+  controller('ListCtrl', ['$scope', 'list', function($scope, list) {
+    $scope.list = list;
 
-      $scope.save = function(model) {
-        var idx = $scope.indexOf(model.id);
-        return model.$save(function() {
-          if (idx >= 0) {
-            $scope.list[idx] = angular.copy(model);
-          } else {
-            $scope.list.unshift(model);
-          }
-        });
-      };
-
-      $scope.delete = function(model) {
-        var idx = $scope.indexOf(model.id);
-        return model.$delete(function() {
-          if (idx >= 0) {
-            $scope.list.splice(idx, 1);
-          }
-        });
-      };
-
-      $scope.indexOf = function(id) {
-        for (var i=0; i<$scope.list.length; i++) {
-          if (id === $scope.list[i].id) {
-            return i;
-          }
+    // Create or update model in list. Save in place or prepend.
+    $scope.save = function(model) {
+      var idx = $scope.indexOf(model.id);
+      return model.$save(function() {
+        if (idx >= 0) {
+          $scope.list[idx] = angular.copy(model);
+        } else {
+          $scope.list.unshift(model);
         }
+      });
+    };
 
-        return -1;
-      };
-    }
-  ]).
+    // Delete model from list.
+    $scope.delete = function(model) {
+      var idx = $scope.indexOf(model.id);
+      return model.$delete(function() {
+        if (idx >= 0) {
+          $scope.list.splice(idx, 1);
+        }
+      });
+    };
+
+    // Return the integer index of the model in our internal list or -1 if does
+    // not exist. Similar to Array.indexOf except matches on 'id' property.
+    $scope.indexOf = function(id) {
+      for (var i=0; i<$scope.list.length; i++) {
+        if (id === $scope.list[i].id) {
+          return i;
+        }
+      }
+
+      return -1;
+    };
+  }]).
   controller('ModelCtrl', ['$scope', '$state', 'model',
     function($scope, $state, model) {
       if (model) {
@@ -49,12 +54,14 @@ angular.module('seed.controllers', []).
         }
 
         if (idx >= 0) {
-          $scope.model = $scope.$parent.list[idx];
+          $scope.model = angular.copy($scope.$parent.list[idx]);
         } else {
+          // Request id not in the parent list. Change to our single item view.
           $state.go('detail', {id: $state.params.id});
         }
       }
 
+      // Create or update this model.
       $scope.save = function(model) {
         var id = model.id;
         var promise = null;
@@ -74,6 +81,7 @@ angular.module('seed.controllers', []).
         return promise;
       };
 
+      // Delete this model.
       $scope.delete = function(model) {
         var promise = null;
         if ('delete' in $scope.$parent) {
@@ -90,6 +98,7 @@ angular.module('seed.controllers', []).
         return promise;
       };
 
+      // Form ngSubmit handler.
       $scope.submit = function(form, model) {
         if (!form.$invalid && form.$dirty) {
           $scope.save(model).then(function() {
