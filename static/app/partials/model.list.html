@@ -1,10 +1,16 @@
 <p>
-  REST API access using the Angular ngResource module. The REST service is a
-  Cloud Endpoint which includes a nifty <a href="/_ah/api/explorer">API
-  Explorer</a>.
+  The <span ng-bind="$config.list_limit"></span> most recent items are shown
+  in the list. Add a new item or choose an existing one to edit it.
 </p>
-<p>
-  The RESTful service implements the basic CRUD data storage functions. For
-  this example, we have a single object called <em>model</em> which has a name
-  and its creation time.
-</p>
+<div ng-if="$config.debug" class="well">
+  <p>
+    REST API access using the Angular ngResource module. The REST service is a
+    Cloud Endpoint which includes a nifty <a href="/_ah/api/explorer">API
+    Explorer</a>.
+  </p>
+  <p>
+    The RESTful service implements the basic CRUD data storage functions. For
+    this example, we have a single object called <em>model</em> which has a
+    name and its creation time.
+  </p>
+</div>
