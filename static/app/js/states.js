@@ -50,13 +50,13 @@ angular.module('seed.states', []).
           controller: 'ModelCtrl',
           resolve: {
             // Option 1. Always load the individual model.
-            model: ['Model', '$stateParams', function(Model, $stateParams) {
-              return Model.get($stateParams).$promise;
-            }]
+            //model: ['Model', '$stateParams', function(Model, $stateParams) {
+            //  return Model.get($stateParams).$promise;
+            //}]
             // Option 2. Copy the model from the parent list.
-            //model: function() {
-            //  return null;
-            //}
+            model: function() {
+              return null;
+            }
           }
         }).
         // Non-nested view of a single model.

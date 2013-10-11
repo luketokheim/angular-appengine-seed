@@ -21,7 +21,7 @@ handlers:
   static_dir: static/test
   secure: always
 
-# Cloud Endpoints handler.
+# Cloud Endpoints handler, maps to "/_ah/api/<service>/<version>/<name>".
 - url: /_ah/spi/.*
   script: services.app
   secure: always
@@ -29,3 +29,7 @@ handlers:
 libraries:
 - name: endpoints
   version: "1.0"
+
+builtins:
+# Profile the datastore performance at "/_ah/stats/".
+- appstats: on

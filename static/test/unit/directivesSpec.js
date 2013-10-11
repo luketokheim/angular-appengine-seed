@@ -2,8 +2,7 @@
 
 describe('Seed directives', function() {
   var MockConfig = {
-    api_url: '/api',
-    version: '1'
+    api_url: '/api/mock'
   };
 
   beforeEach(module(function($provide) {
@@ -12,14 +11,6 @@ describe('Seed directives', function() {
 
   describe('seedHref', function() {
     beforeEach(module('seed.directives'));
-
-    var MockConfig = {
-      api_url: '/api'
-    };
-
-    beforeEach(module(function($provide) {
-      $provide.constant('Config', MockConfig);
-    }));
 
     var element = null;
     var scope = null;

@@ -25,7 +25,7 @@ describe('Seed services', function() {
   });
 
   var MockConfig = {
-    api_url: '/api',
+    api_url: '/api/mock',
     debug: false,
     list_limit: 5,
     version: 1
@@ -72,7 +72,7 @@ describe('Seed services', function() {
       $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it('should get a list of items', function() {
+    it('should query a list of items', function() {
       var data = Model.query();
       $httpBackend.flush();
 
