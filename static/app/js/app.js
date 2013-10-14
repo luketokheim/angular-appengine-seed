@@ -40,4 +40,6 @@ angular.module('seed', ['ui.router',
         }
       );
     }
-  ]);
+  ]).
+  // Prevent scrolling back to the top of the page every time the route changes.
+  value('$anchorScroll', angular.noop);

@@ -7,10 +7,12 @@ angular.module('seed.filters', []).
   // like "5 days ago" or "8 minutes ago".
   filter('moment_fromNow', function() {
     return function(value) {
-      // Some Date parsers refuse a UTC string without the Z postfix.
-      if ((value instanceof String) && !value.endsWith('Z')) {
-        value = value.concat('Z');
+      // Trim off anything thing less than a second.
+      var idx = value.lastIndexOf('.');
+      if (idx >= 0) {
+        value = value.substring(0, idx);
       }
+
       return moment.utc(value).fromNow();
     };
   });
