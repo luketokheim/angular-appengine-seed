@@ -3,6 +3,7 @@ version: 1
 runtime: python27
 api_version: 1
 threadsafe: yes
+instance_class: F2
 
 handlers:
 # Angular application.
@@ -28,8 +29,4 @@ handlers:
 
 libraries:
 - name: endpoints
-  version: "1.0"
-
-builtins:
-# Profile the datastore performance at "/_ah/stats/".
-- appstats: on
+  version: latest
