@@ -18,7 +18,8 @@ describe('Seed controllers', function() {
   };
 
   // Create ngResource method wrappers per item.
-  list = list.map(function(item) {
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i];
     item['$save'] = function(fn) {
       var model = self;
       if (!model.id) {
@@ -45,8 +46,9 @@ describe('Seed controllers', function() {
         }
       }
     };
-    return item;
-  });
+
+    list[i] = item;
+  }
 
   // Canned data for the model (single item) controller.
   var model = list[0];
@@ -102,7 +104,7 @@ describe('Seed controllers', function() {
 
     it('should remove item 1 from list', function() {
       expect(scope.list.length).toBe(2);
-      scope.delete(model);
+      scope.remove(model);
       expect(scope.list.length).toBe(1);
       expect(scope.indexOf(model.id)).toBe(-1);
     });
@@ -110,7 +112,7 @@ describe('Seed controllers', function() {
     it('it should remove all items from list', function() {
       var list_copy = angular.copy(list);
       for (var i=0; i<list_copy.length; i++) {
-        scope.delete(list_copy[i]);
+        scope.remove(list_copy[i]);
       }
 
       expect(scope.list.length).toBe(0);
@@ -135,7 +137,7 @@ describe('Seed controllers', function() {
       params: {id: model.id},
       go: function(name, param) {},
       save: function() {},
-      delete: function() {}
+      remove: function() {}
     };
     var ctrl = null;
     var parent = {
@@ -144,8 +146,8 @@ describe('Seed controllers', function() {
         state.save();
         return model.$save();
       },
-      delete: function(model) {
-        state.delete();
+      remove: function(model) {
+        state.remove();
         return model.$delete();
       },
       indexOf: function(id) {
@@ -177,7 +179,7 @@ describe('Seed controllers', function() {
     beforeEach(inject(function($rootScope, $controller) {
       spyOn(state, 'go');
       spyOn(state, 'save');
-      spyOn(state, 'delete');
+      spyOn(state, 'remove');
 
       scope = $rootScope.$new();
       scope.$parent = parent;
@@ -210,11 +212,11 @@ describe('Seed controllers', function() {
     });
 
     it("should delete model and go to create state", function() {
-      scope.delete(scope.model);
+      scope.remove(scope.model);
 
       expect(scope.model.id).toBe(model.id);
 
-      expect(state.delete).toHaveBeenCalled();
+      expect(state.remove).toHaveBeenCalled();
       expect(state.go).toHaveBeenCalledWith('model.create');
     });
 

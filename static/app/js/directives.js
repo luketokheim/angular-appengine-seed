@@ -13,9 +13,10 @@ angular.module('seed.directives', []).
       restrict: 'A',
       link: function(scope, element, attrs) {
         attrs.$observe('seedHref', function(value) {
-          var href = [Config.api_url, value].filter(function(value) {
-            return '' != value;
-          }).join('/');
+          var href = Config.api_url;
+          if ('' != value) {
+            href = href.concat('/', value);
+          }
 
           element.attr('href', href);
         });
@@ -30,9 +31,10 @@ angular.module('seed.directives', []).
       restrict: 'A',  
       link: function(scope, element, attrs) {
         attrs.$observe('seedApi', function(value) {
-          var href = [Config.api_url, value].filter(function(value) {
-            return '' != value;
-          }).join('/');
+          var href = Config.api_url;
+          if ('' != value) {
+            href = href.concat('/', value);
+          }
 
           element.text(href);
         });

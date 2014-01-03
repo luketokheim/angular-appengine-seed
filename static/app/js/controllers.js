@@ -20,7 +20,7 @@ angular.module('seed.controllers', []).
     };
 
     // Delete model from list.
-    $scope.delete = function(model) {
+    $scope.remove = function(model) {
       var idx = $scope.indexOf(model.id);
       return model.$delete(function() {
         if (idx >= 0) {
@@ -82,10 +82,10 @@ angular.module('seed.controllers', []).
       };
 
       // Delete this model.
-      $scope.delete = function(model) {
+      $scope.remove = function(model) {
         var promise = null;
-        if ('delete' in $scope.$parent) {
-          promise = $scope.$parent.delete(model);
+        if ('remove' in $scope.$parent) {
+          promise = $scope.$parent.remove(model);
         } else {
           promise = model.$delete();
         }

@@ -101,7 +101,7 @@ describe('Seed services', function() {
     });
 
     it('should delete an item by id', function() {
-      var data = Model.delete({id: model.id});
+      var data = Model.remove({id: model.id});
       $httpBackend.flush();
 
       expect(data).toEqualData({id: model.id});
