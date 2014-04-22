@@ -4,8 +4,8 @@
 // app module but split it out for this example application since it is a major
 // feature.
 angular.module('seed.states', []).
-  config(['$stateProvider', '$urlRouterProvider',
-    function($stateProvider, $urlRouterProvider) {
+  config(['$stateProvider', '$urlRouterProvider', '$locationProvider',
+    function($stateProvider, $urlRouterProvider, $locationProvider) {
       // View routing. Associate views with their controllers. In this example,
       // we also resolve the initial data for views before displaying them.
       $stateProvider.
@@ -73,5 +73,7 @@ angular.module('seed.states', []).
 
       // Default route. Not a named state.
       $urlRouterProvider.otherwise('/model');
+
+      $locationProvider.hashPrefix('!');
     }
   ]);
