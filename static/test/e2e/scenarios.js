@@ -10,7 +10,7 @@ describe('Seed', function() {
     });
 
     it('should display an "Add Item" link', function() {
-      element("a[href='#/model/create']", "Add Item").click();
+      element("a[href='#!/model/create']", "Add Item").click();
       
       expect(browser().location().url()).toBe('/model/create');
     });
@@ -18,7 +18,7 @@ describe('Seed', function() {
 
   describe('Detail view', function() {
     it('should create an item and go to its detail view', function() {
-      browser().navigateTo('/#/model/create');
+      browser().navigateTo('/#!/model/create');
 
       expect(browser().location().url()).toBe('/model/create');
       expect(repeater('.btn-primary').count()).toEqual(1);
